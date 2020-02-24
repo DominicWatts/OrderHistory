@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
+	<body>
+        <referenceContainer name="xigen.catalog" htmlClass="content-wrapper customer-account customer-account--order-history" />
+		<referenceContainer name="content">
+			<block class="Xigen\OrderHistory\Block\Sales\View" name="sales.view" template="Xigen_OrderHistory::sales/view.phtml"/>
+		</referenceContainer>
+        <referenceBlock name="page.main.title">
+            <arguments>
+                <argument name="id" xsi:type="string">account_order_view_title</argument>
+                <argument name="css_class" xsi:type="string">account-title account-title--icon account-title--orders</argument>
+            </arguments>
+        </referenceBlock>
+
+        <move element="order.status" destination="content" before="-" />
+        <move element="order.date" destination="content" after="order.status" />
+        <move element="order.actions.container" destination="content" after="order.date" />
+        <referenceBlock name="order_totals">
+            <arguments>
+                <argument name="label_properties" xsi:type="string">colspan="4" class="text-right"</argument>
+            </arguments>
+        </referenceBlock>
+	</body>
+</page>

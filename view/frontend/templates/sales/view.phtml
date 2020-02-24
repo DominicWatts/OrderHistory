@@ -1,0 +1,151 @@
+<?php
+/**
+ * @author Xigen
+ */
+$order = $block->getOrder();
+$items = $order->getItemsCollection();
+?>
+<div class="order-date">
+    <strong><?= $block->escapeHtml(__('Order Date:')); ?></strong>
+    <date><?= $block->escapeHtml($block->formatDate($order->getCreatedAt(), \IntlDateFormatter::LONG)); ?></date>
+</div>
+<span class="item-counts">
+    <?= $block->escapeHtml(__('%1 ITEMS - %2', count($items), $order->getStatusLabel())); ?>
+</span>
+<div class="order-details-items ordered">
+    <div class="account-orders">
+        <table class="table table-striped" summary="<?= $block->escapeHtmlAttr(__('Items Ordered')); ?>">
+            <?php foreach ($items as $item): ?>
+            <tbody>
+                <tr id="order-item-row-95">
+                    <td class="col product-img">
+                        <img src="<?= $block->escapeUrl($block->getProductImage($item->getSku())); ?>" 
+                             alt="<?= $block->escapeHtmlAttr($item->getName()); ?>">
+                    </td>
+                    <td class="col name" data-th="<?= $block->escapeHtmlAttr($item->getName()); ?>">
+                        <strong class="product name product-item-name">
+                            <?= $block->escapeHtml($item->getName()); ?>
+                        </strong>
+                    </td>
+                    <td class="col qty" data-th="<?= $block->escapeHtml(__('Qty')); ?>">
+                        <ul class="items-qty list-unstyled">
+                        <?php if ($item->getQtyOrdered() > 0): ?>
+                            <li class="item">
+                                <span class="title"><?= $block->escapeHtml(__('QTY:')); ?></span>
+                                <span class="content"><?= $item->getQtyOrdered()*1 ?></span>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($item->getQtyShipped() > 0): ?>
+                            <li class="item">
+                                <span class="title"><?= $block->escapeHtml(__('Shipped')); ?></span>
+                                <span class="content"><?= $item->getQtyShipped()*1 ?></span>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($item->getQtyCanceled() > 0): ?>
+                            <li class="item">
+                                <span class="title"><?= $block->escapeHtml(__('Canceled')); ?></span>
+                                <span class="content"><?= $item->getQtyCanceled()*1 ?></span>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($item->getQtyRefunded() > 0): ?>
+                            <li class="item">
+                                <span class="title"><?= $block->escapeHtml(__('Refunded')); ?></span>
+                                <span class="content"><?= $item->getQtyRefunded()*1 ?></span>
+                            </li>
+                        <?php endif; ?>
+                        </ul>
+                    </td>
+                    <td class="col subtotal" data-th="Subtotal">
+                        <span class="price-excluding-tax" data-label="Excl. Tax">
+                            <span class="cart-price">
+                                <span class="price">
+                                    <?= /* @noEscape */ $block->formatPrice($item->getRowTotal()); ?>
+                                </span>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+            <?php endforeach; ?>
+        </table>
+
+        <table class="order-total-table">
+            <tbody>
+                <tr>
+                    <td><?= $block->escapeHtml(__('Subtotal'));?></td>
+                    <td><?= /* @noEscape */ $block->formatPrice($order->getSubtotal()); ?></td>
+                </tr>
+                <tr>
+                    <td><?= $block->escapeHtml(__('Shipping'));?></td>
+                    <td><?= /* @noEscape */ $block->formatPrice($order->getShippingAmount()); ?></td>
+                </tr>
+                <tr>
+                    <td><?= $block->escapeHtml(__('Total'));?></td>
+                    <td><?= /* @noEscape */ $block->formatPrice($order->getGrandTotal()); ?></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="block block-order-details-view">
+    <h4><?= $block->escapeHtml(__("Order Information")); ?></h4>
+    <div class="block-content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card order-billing-address">
+                    <div class="card-heading">
+                        <strong><?= $block->escapeHtml(__("Billing Address")); ?></strong>
+                    </div>
+                    <div class="card-body">
+                        <address><?= /* @noEscape */ $block->getFormattedAddress($order->getBillingAddress()); ?></address>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card order-billing-method">
+                    <div class="card-heading">
+                        <strong><?= $block->escapeHtml(__("Payment Method")); ?></strong>
+                    </div>
+                    <div class="card-body">
+                        <dl class="payment-method checkmemo">
+                            <dt class="title"><?= $block->escapeHtml(__("Payment")); ?></dt>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card box box-order-shipping-address">
+                    <div class="card-heading box-title">
+                        <strong><?= $block->escapeHtml(__("Delivery Address")); ?></strong>
+                    </div>
+                    <div class="card-body box-order-shipping-address">
+                        <address><?= /* @noEscape */ $block->getFormattedAddress($order->getShippingAddress()); ?></address>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card box box-order-shipping-method">
+                    <div class="card-heading">
+                        <strong><?= $block->escapeHtml(__("Shipping Method")); ?></strong>
+                    </div>
+                    <div class="card-body">
+                        <?= $block->escapeHtml($order->getShippingDescription()); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="button-sections">
+            <div class="actions-toolbar text-right">
+                <div class="secondary">
+                    <a class="action back btn btn-secondary" 
+                       href="<?= $block->escapeUrl($block->getBackUrl()); ?>">
+                        <span><?= $block->escapeHtml(__("Back")); ?></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+{
+    "name": "xigen/module-orderhistory",
+    "description": "Order history from magento 1",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Dominic Xigen",
+            "email": "xigen.dominic@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Xigen\\OrderHistory\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}

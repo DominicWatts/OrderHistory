@@ -1,0 +1,63 @@
+<?php
+/**
+ * @author Xigen
+ */
+use \Magento\Framework\Data\Helper\PostHelper;
+use \Xigen\OrderHistory\Helper\Reorder;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+?>
+
+<?php $_orders = $block->getOrders(); ?>
+
+<div class="account-orders-history">
+    <?php if ($_orders && count($_orders)): ?>
+        <div class="account-orders__container" id="my-orders-table">
+            <?php foreach ($_orders as $_order): ?>
+                <div class="account-orders__item order-item">
+
+                    <div class="order-item__header">
+                        <div class="order-item__id">
+                            <?= $block->escapeHtml(__('Order Number #'. $_order->getIncrementId())); ?>
+                        </div>
+                        <div class="order-item__date">
+                            <?= $block->escapeHtml(__('Date: %1', $block->formatDate($_order->getCreatedAt()))); ?>
+                        </div>
+                    </div>
+
+                    <div class="order-item__main">
+                        <div class="order-item__status"><?= $block->escapeHtml($_order->getStatusLabel()) ?></div>
+                        
+                        <div class="order-item__actions">
+                            
+                            <?php if ($this->helper(Reorder::class)->canReorder($_order->getEntityId())): ?>
+                                <a href="#" 
+                                data-post='<?= $block->escapeHtmlAttr($this->helper(PostHelper::class)->getPostData($block->getReorderUrl($_order))) ?>' 
+                                class="action order btn btn-primary">
+                                    <span><?= $block->escapeHtml(__('Reorder')) ?></span>
+                                </a>
+                            <?php endif ?>
+                            
+                            <a href="<?= $block->escapeUrl($block->getViewUrl($_order)) ?>" 
+                               class="action view btn btn-primary">
+                                <span><?= $block->escapeHtml(__('Order Details')) ?></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php if ($block->getPagerHtml()): ?>
+            <div class="account-orders__toolbar toolbar bottom"><?= $block->getPagerHtml(); ?></div>
+        <?php endif ?>
+    <?php else: ?>
+        <div class="account-orders__empty account-empty">
+            <div class="account-empty__container row">
+                <div class="col-16 col-md-12 col-lg-4-10th offset-md-2 offset-lg-3-10th">
+                    <p><?= $block->escapeHtml(__('You have not placed any orders yet,<br> start shopping in Jackson’s.')); ?></p>
+                    <p><a href="/" class="btn btn-primary btn-wide"><?= $block->escapeHtml(__('Start Here')); ?></a></p>
+                </div>
+            </div>
+        </div>
+    <?php endif ?>
+</div>
