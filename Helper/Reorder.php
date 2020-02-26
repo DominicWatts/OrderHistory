@@ -20,20 +20,27 @@ class Reorder extends \Magento\Framework\App\Helper\AbstractHelper
     protected $order;
 
     /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    protected $_storeManager;
+
+    /**
+     * Reorder constructor.
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Xigen\OrderHistory\Model\HistoryFactory $order
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Customer\Model\Session $customerSession,
-        \Xigen\OrderHistory\Model\HistoryFactory $order
+        \Xigen\OrderHistory\Model\HistoryFactory $order,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->order = $order;
         $this->customerSession = $customerSession;
-        parent::__construct(
-            $context
-        );
+        $this->_storeManager = $storeManager;
+        parent::__construct($context);
     }
 
     /**
@@ -75,7 +82,7 @@ class Reorder extends \Magento\Framework\App\Helper\AbstractHelper
             return false;
         }
 
-        if (!$this->isAllowed(1)) {
+        if (!$this->isAllowed($this->_storeManager->getStore()->getId())) {
             return false;
         }
 

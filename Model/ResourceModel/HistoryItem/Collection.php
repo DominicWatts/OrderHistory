@@ -14,6 +14,13 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     protected $_idFieldName = 'item_id';
 
     /**
+     * Order field for setOrderFilter
+     *
+     * @var string
+     */
+    protected $_orderField = 'order_id';
+
+    /**
      * Define resource model
      *
      * @return void
@@ -24,5 +31,50 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
             \Xigen\OrderHistory\Model\HistoryItem::class,
             \Xigen\OrderHistory\Model\ResourceModel\HistoryItem::class
         );
+    }
+
+    /**
+     * Set sales order model as parent collection object
+     *
+     * @param \Magento\Sales\Model\Order $order
+     * @return $this
+     */
+    public function setSalesOrder($order)
+    {
+        $this->_salesOrder = $order;
+        return $this;
+    }
+
+    /**
+     * Retrieve sales order as parent collection object
+     *
+     * @return \Magento\Sales\Model\Order|null
+     */
+    public function getSalesOrder()
+    {
+        return $this->_salesOrder;
+    }
+
+    /**
+     * Add order filter
+     *
+     * @param int|\Magento\Sales\Model\Order|array $order
+     * @return $this
+     */
+    public function setOrderFilter($order)
+    {
+        if ($order instanceof \Xigen\OrderHistory\Model\History) {
+            $this->setSalesOrder($order);
+            $orderId = $order->getId();
+            if ($orderId) {
+                $this->addFieldToFilter($this->_orderField, $orderId);
+            } else {
+                $this->_totalRecords = 0;
+                $this->_setIsLoaded(true);
+            }
+        } else {
+            $this->addFieldToFilter($this->_orderField, $order);
+        }
+        return $this;
     }
 }

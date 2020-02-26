@@ -3,7 +3,6 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="customer_account"/>
 	<body>
-        <referenceContainer name="xigen.catalog" htmlClass="content-wrapper customer-account customer-account--order-history" />
 		<referenceContainer name="content">
 			<block class="Xigen\OrderHistory\Block\Sales\History" name="sales.history" template="Xigen_OrderHistory::sales/history.phtml"/>
 		</referenceContainer>

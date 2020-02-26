@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="customer_account_navigation">
+            <block class="Magento\Customer\Block\Account\SortLinkInterface" name="test-link">
+                <arguments>
+                    <argument name="path" xsi:type="string">orderhistory/sales/history</argument>
+                    <argument name="label" xsi:type="string">My Previous Orders</argument>
+                    <argument name="sortOrder" xsi:type="number">200</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

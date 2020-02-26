@@ -122,11 +122,6 @@ class HistoryRepository implements HistoryRepositoryInterface
     public function save(
         \Xigen\OrderHistory\Api\Data\HistoryInterface $history
     ) {
-        /* if (empty($history->getStoreId())) {
-            $storeId = $this->storeManager->getStore()->getId();
-            $history->setStoreId($storeId);
-        } */
-
         $historyData = $this->extensibleDataObjectConverter->toNestedArray(
             $history,
             [],

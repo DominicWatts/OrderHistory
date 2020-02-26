@@ -38,7 +38,17 @@ class History extends \Magento\Framework\View\Element\Template
     protected $_storeManager;
 
     /**
-     * History constructor.
+     * @var \Magento\Directory\Model\CurrencyFactory
+     */
+    protected $currencyFactory;
+
+    /**
+     * @var \Xigen\OrderHistory\Helper\Config
+     */
+    protected $configHelper;
+
+    /**
+     * Undocumented function
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Xigen\OrderHistory\Model\ResourceModel\History\CollectionFactory $orderCollectionFactory
      * @param \Magento\Customer\Model\Session $customerSession
@@ -46,6 +56,8 @@ class History extends \Magento\Framework\View\Element\Template
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepositoryInterface
      * @param \Xigen\OrderHistory\Model\HistoryFactory $history
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Directory\Model\CurrencyFactory $currencyFactory
+     * @param \Xigen\OrderHistory\Helper\Config $configHelper
      * @param array $data
      */
     public function __construct(
@@ -56,6 +68,8 @@ class History extends \Magento\Framework\View\Element\Template
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepositoryInterface,
         \Xigen\OrderHistory\Model\HistoryFactory $history,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Directory\Model\CurrencyFactory $currencyFactory,
+        \Xigen\OrderHistory\Helper\Config $configHelper,
         array $data = []
     ) {
         $this->_orderCollectionFactory = $orderCollectionFactory;
@@ -64,6 +78,8 @@ class History extends \Magento\Framework\View\Element\Template
         $this->customerRepositoryInterface = $customerRepositoryInterface;
         $this->history = $history;
         $this->_storeManager = $storeManager;
+        $this->currencyFactory = $currencyFactory;
+        $this->configHelper = $configHelper;
         parent::__construct($context, $data);
     }
 
@@ -73,7 +89,7 @@ class History extends \Magento\Framework\View\Element\Template
     protected function _construct()
     {
         parent::_construct();
-        $this->pageConfig->getTitle()->set(__('My Orders Pre'));
+        $this->pageConfig->getTitle()->set(__('My Previous Orders'));
     }
 
     /**
@@ -98,6 +114,15 @@ class History extends \Magento\Framework\View\Element\Template
             return false;
         }
 
+        $currentMagento2Store = $this->getStoreId();
+        $storeMappings = $this->configHelper->getStoreIdMappings();
+        $historyArray = [];
+        foreach ($storeMappings as $mage1storeId => $mage2storeId) {
+            if ($mage2storeId == $currentMagento2Store) {
+                $historyArray[] = $mage1storeId;
+            }
+        }
+
         if (!$this->orders) {
             $this->orders = $this->_orderCollectionFactory
                 ->create()
@@ -110,7 +135,7 @@ class History extends \Magento\Framework\View\Element\Template
                 )
                 ->addFieldToFilter(
                     'store_id',
-                    ['in' => [1, 3, 4, 7, 8, 13, 14, 15, 16]]
+                    ['in' => [$historyArray]]
                 )
                 ->addFieldToFilter(
                     'status',
@@ -188,6 +213,41 @@ class History extends \Magento\Framework\View\Element\Template
     }
 
     /**
+     * Format price without symbol
+     * @param float $price
+     * @return float
+     */
+    public function formatPrice($price, $currency)
+    {
+        return $this->currencyFactory
+            ->create()
+            ->format(
+                $price,
+                ['symbol' => $this->getCurrencySymbol($currency)],
+                false
+            );
+    }
+
+    /**
+     * Get currency from loaded order
+     * @return void|string
+     */
+    public function getCurrencySymbol($currencyCode)
+    {
+        $order = $this->getOrder();
+
+        $currency = $this->currencyFactory
+            ->create()
+            ->load($currencyCode);
+
+        if (!$currency) {
+            return null;
+        }
+
+        return $currency->getCurrencySymbol();
+    }
+
+    /**
      * Get customer by Id.
      * @param int $customerId
      * @return \Magento\Customer\Model\Data\Customer
@@ -200,5 +260,14 @@ class History extends \Magento\Framework\View\Element\Template
             $this->logger->critical($e);
             return false;
         }
+    }
+
+    /**
+     * Get message for no orders.
+     * @return \Magento\Framework\Phrase
+     */
+    public function getEmptyOrdersMessage()
+    {
+        return __('You have placed no orders.');
     }
 }

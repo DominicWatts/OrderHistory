@@ -122,11 +122,6 @@ class HistoryItemRepository implements HistoryItemRepositoryInterface
     public function save(
         \Xigen\OrderHistory\Api\Data\HistoryItemInterface $historyItem
     ) {
-        /* if (empty($historyItem->getStoreId())) {
-            $storeId = $this->storeManager->getStore()->getId();
-            $historyItem->setStoreId($storeId);
-        } */
-
         $historyItemData = $this->extensibleDataObjectConverter->toNestedArray(
             $historyItem,
             [],

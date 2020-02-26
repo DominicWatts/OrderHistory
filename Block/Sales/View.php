@@ -62,7 +62,35 @@ class View extends \Magento\Framework\View\Element\Template
     protected $imageHelper;
 
     /**
-     * View constructor.
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * Order items per page.
+     *
+     * @var int
+     */
+    private $itemsPerPage;
+
+    /**
+     * @var \Xigen\OrderHistory\Model\ResourceModel\HistoryItem\CollectionFactory
+     */
+    private $itemCollectionFactory;
+
+    /**
+     * @var Xigen\OrderHistory\Model\ResourceModel\HistoryItem\Collection|null
+     */
+    private $itemCollection;
+
+    /**
+     * Magento string lib
+     * @var Magento\Framework\Stdlib\StringUtils
+     */
+    protected $string;
+
+    /**
+     * Undocumented function
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Xigen\OrderHistory\Model\ResourceModel\History\CollectionFactory $orderCollectionFactory
      * @param \Magento\Customer\Model\Session $customerSession
@@ -74,6 +102,10 @@ class View extends \Magento\Framework\View\Element\Template
      * @param \Magento\Customer\Model\Address\Config $addressConfig
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepositoryInterface
      * @param \Magento\Catalog\Helper\Image $imageHelper
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Xigen\OrderHistory\Model\ResourceModel\HistoryItem\CollectionFactory $itemCollectionFactory
+     * @param \Magento\Framework\Stdlib\StringUtils $string
+     * @param array $data
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
@@ -87,6 +119,9 @@ class View extends \Magento\Framework\View\Element\Template
         \Magento\Customer\Model\Address\Config $addressConfig,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepositoryInterface,
         \Magento\Catalog\Helper\Image $imageHelper,
+        \Psr\Log\LoggerInterface $logger,
+        \Xigen\OrderHistory\Model\ResourceModel\HistoryItem\CollectionFactory $itemCollectionFactory,
+        \Magento\Framework\Stdlib\StringUtils $string,
         array $data = []
     ) {
         $this->_orderCollectionFactory = $orderCollectionFactory;
@@ -99,6 +134,9 @@ class View extends \Magento\Framework\View\Element\Template
         $this->addressConfig = $addressConfig;
         $this->productRepositoryInterface = $productRepositoryInterface;
         $this->imageHelper = $imageHelper;
+        $this->logger = $logger;
+        $this->itemCollectionFactory = $itemCollectionFactory;
+        $this->string = $string;
         parent::__construct($context, $data);
     }
 
@@ -199,6 +237,15 @@ class View extends \Magento\Framework\View\Element\Template
     }
 
     /**
+     * Return back title for logged in and guest users
+     * @return \Magento\Framework\Phrase
+     */
+    public function getBackTitle()
+    {
+        return __('Back to My Orders');
+    }
+
+    /**
      * Get product by SKU
      * @param $sku
      * @param bool $editMode
@@ -236,5 +283,77 @@ class View extends \Magento\Framework\View\Element\Template
             self::THUMBNAIL_DIMENSIONS,
             self::THUMBNAIL_DIMENSIONS
         )->getUrl();
+    }
+
+    protected function _prepareLayout()
+    {
+        $this->itemsPerPage = $this->_scopeConfig->getValue('sales/orders/items_per_page');
+
+        $this->itemCollection = $this->itemCollectionFactory->create();
+        $this->itemCollection->setOrderFilter($this->getOrder());
+
+        /** @var \Magento\Theme\Block\Html\Pager $pagerBlock */
+        $pagerBlock = $this->getChildBlock('sales_order_item_pager');
+        if ($pagerBlock) {
+            $pagerBlock->setLimit($this->itemsPerPage);
+            //here pager updates collection parameters
+            $pagerBlock->setCollection($this->itemCollection);
+            $pagerBlock->setAvailableLimit([$this->itemsPerPage]);
+            $pagerBlock->setShowAmounts($this->isPagerDisplayed());
+        }
+
+        return parent::_prepareLayout();
+    }
+
+    /**
+     * Determine if the pager should be displayed for order items list.
+     *
+     * To be called from templates(after _prepareLayout()).
+     *
+     * @return bool
+     * @since 100.1.7
+     */
+    public function isPagerDisplayed()
+    {
+        $pagerBlock = $this->getChildBlock('sales_order_item_pager');
+        return $pagerBlock && ($this->itemCollection->getSize() > $this->itemsPerPage);
+    }
+
+    /**
+     * Get visible items for current page.
+     *
+     * To be called from templates(after _prepareLayout()).
+     *
+     * @return \Magento\Framework\DataObject[]
+     * @since 100.1.7
+     */
+    public function getItems()
+    {
+        return $this->itemCollection->getItems();
+    }
+
+    /**
+     * Get pager HTML according to our requirements.
+     *
+     * To be called from templates(after _prepareLayout()).
+     *
+     * @return string HTML output
+     * @since 100.1.7
+     */
+    public function getPagerHtml()
+    {
+        /** @var \Magento\Theme\Block\Html\Pager $pagerBlock */
+        $pagerBlock = $this->getChildBlock('sales_order_item_pager');
+        return $pagerBlock ? $pagerBlock->toHtml() : '';
+    }
+
+    /**
+     * Prepare SKU
+     * @param string $sku
+     * @return string
+     */
+    public function prepareSku($sku)
+    {
+        return $this->escapeHtml($this->string->splitInjection($sku));
     }
 }

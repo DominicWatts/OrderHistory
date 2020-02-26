@@ -20,10 +20,14 @@ class Reorder extends \Magento\Framework\App\Action\Action
     protected $reorder;
 
     /**
-     * Constructor
-     *
-     * @param \Magento\Framework\App\Action\Context  $context
+     * Undocumented function
+     * @param \Magento\Framework\App\Action\Context $context
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param \Xigen\OrderHistory\Helper\Reorder $reorder
+     * @param \Xigen\OrderHistory\Model\HistoryFactory $order
+     * @param \Xigen\OrderHistory\Api\HistoryRepositoryInterface $orderRepository
+     * @param \Magento\Checkout\Model\Cart $cart
+     * @param \Magento\Catalog\Model\ProductFactory $productFactory
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -52,9 +56,11 @@ class Reorder extends \Magento\Framework\App\Action\Action
     {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $orderId = $this->getRequest()->getParam('order_id');
+
         /** @var \Xigen\OrderHistory\Model\History $order */
         $order = $this->orderRepository->get($orderId);
-        if (!$products = $this->reorder->canReorder($order->getEntityId())) {
+        $products = $this->reorder->canReorder($order->getEntityId());
+        if (!$products || !$products->getSize()) {
             $this->messageManager->addErrorMessage(
                 __('One or more products are no longer available.')
             );
@@ -79,11 +85,21 @@ class Reorder extends \Magento\Framework\App\Action\Action
             $history = $model->getItemsCollection($product->getSku());
             $qty = (int) $history->getQtyOrdered();
             if ($qty === 0) {
+                $this->messageManager->addWarning(
+                    __('Cannot add %1 at this time', $add->getName())
+                );
                 continue;
             }
+
             // Add the product to the cart or update the quantity
             try {
                 $add = $this->productFactory->create()->load($product->getId());
+                if (!$add) {
+                    $this->messageManager->addWarnng(
+                        __('Cannot add %1 x %2 at this time', $qty, $add->getName())
+                    );
+                    continue;
+                }
                 $productName = $product->getName();
                 $this->cart->addProduct(
                     $add,

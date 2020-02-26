@@ -66,6 +66,11 @@ class History extends \Magento\Framework\Model\AbstractModel
     protected $productListFactory;
 
     /**
+     * @var \Xigen\OrderHistory\Helper\Config
+     */
+    protected $configHelper;
+
+    /**
      * History constructor.
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
@@ -75,8 +80,9 @@ class History extends \Magento\Framework\Model\AbstractModel
      * @param ResourceModel\History\Collection $resourceCollection
      * @param ResourceModel\HistoryItem\CollectionFactory $orderItemCollectionFactory
      * @param ResourceModel\HistoryAddress\CollectionFactory $addressCollectionFactory
-     * @param Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productListFactory
+     * @param \Xigen\OrderHistory\Helper\Config $configHelper
      * @param array $data
      */
     public function __construct(
@@ -90,6 +96,7 @@ class History extends \Magento\Framework\Model\AbstractModel
         \Xigen\OrderHistory\Model\ResourceModel\HistoryAddress\CollectionFactory $addressCollectionFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productListFactory,
+        \Xigen\OrderHistory\Helper\Config $configHelper,
         array $data = []
     ) {
         $this->historyDataFactory = $historyDataFactory;
@@ -98,6 +105,7 @@ class History extends \Magento\Framework\Model\AbstractModel
         $this->_addressCollectionFactory = $addressCollectionFactory;
         $this->_storeManager = $storeManager;
         $this->productListFactory = $productListFactory;
+        $this->configHelper = $configHelper;
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -126,44 +134,11 @@ class History extends \Magento\Framework\Model\AbstractModel
      */
     public function getStatusLabel()
     {
-        switch ($this->getStatus()) {
-            case self::STATUS_CANCELED:
-                return __('Canceled');
-            case self::STATUS_AWAITING_STOCK:
-                return __('Awaiting Stock');
-            case self::STATUS_BEING_PICKED:
-                return __('Being Picked in Warehouse');
-            case self::STATUS_CLOSED:
-                return __('Closed');
-            case self::STATUS_COMPLETE:
-                return __('Completed');
-            case self::STATUS_FRAUD:
-                return __('Suspected Fraud');
-            case self::STATUS_FULL_REFUND:
-                return __('Full Refund');
-            case self::STATUS_HOLDED:
-                return __('On Hold');
-            case self::STATUS_PARTIAL_REFUND:
-                return __('Partial Refund');
-            case self::STATUS_PART_SHIPPED:
-                return __('Part Shipped');
-            case self::STATUS_PAYMENT_REVIEW:
-                return __('Payment Review');
-            case self::STATUS_PAYPAL_REVERSED:
-                return __('Paypal Reversed');
-            case self::STATUS_PENDING:
-                return __('Payment Failed');
-            case self::STATUS_PENDING_PAYMENT:
-                return __('Order Not Confirmed');
-            case self::STATUS_PROCESSING:
-                return __('Payment Completed');
-            case self::STATUS_PAYPAL_CANCELED_REVERSAL:
-                return __('PayPal Canceled Reversal');
-            case self::STATUS_PENDING_PAYPAL:
-                return __('Pending PayPal');
-            default:
-                return '';
+        $statusMapping = $this->configHelper->getStatusMapping();
+        if (isset($statusMapping[$this->getStatus()])) {
+            return $statusMapping[$this->getStatus()];
         }
+        return "";
     }
 
     /**
@@ -283,15 +258,6 @@ class History extends \Magento\Framework\Model\AbstractModel
     }
 
     /**
-     * Retrieve store model instance - hardcode to JAS english
-     * @return \Magento\Store\Model\Store
-     */
-    public function getStore()
-    {
-        return $this->_storeManager->getStore(1);
-    }
-
-    /**
      * Retrieve order reorder availability
      *
      * @return bool
@@ -335,9 +301,9 @@ class History extends \Magento\Framework\Model\AbstractModel
                     return false;
                 }
             }
+            return $productsCollection->getSize() > 0 ? $productsCollection : null;
         }
-
-        return $productsCollection;
+        return false;
     }
 
     /**

@@ -46,15 +46,16 @@ class View extends \Magento\Framework\App\Action\Action
     private $request;
 
     /**
-     * View constructor.
-     * @param Context $context
-     * @param PageFactory $resultPageFactory
+     * Undocumented function
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      * @param \Xigen\OrderHistory\Model\HistoryFactory $orderFactory
-     * @param Registry $registry
+     * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\UrlInterface $url
-     * @param ForwardFactory $resultForwardFactory
-     * @param RedirectFactory $redirectFactory
-     * @param Http $request
+     * @param \Magento\Framework\Controller\Result\ForwardFactory $resultForwardFactory
+     * @param \Magento\Framework\Controller\Result\RedirectFactory $redirectFactory
+     * @param \Magento\Framework\App\Request\Http $request
+     * @param \Magento\Customer\Model\Session $customerSession
      */
     public function __construct(
         Context $context,

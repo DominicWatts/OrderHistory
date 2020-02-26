@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="xigen" sortOrder="999" translate="label">
+            <label>Xigen</label>
+        </tab>
+        <section id="orderhistory" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
+            <label>Order History</label>
+            <tab>xigen</tab>
+            <resource>Xigen_OrderHistory::config_xigen_orderhistory</resource>
+            <group id="mapping" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label">
+                <label>Mapping</label>
+                <field id="status" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                    <label>Status Mappings</label>
+					<frontend_model>Xigen\OrderHistory\Block\Adminhtml\System\Status</frontend_model>
+              		<backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+                <field id="store" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="20" translate="label" type="text">
+                    <label>Store Mappings</label>
+					<frontend_model>Xigen\OrderHistory\Block\Adminhtml\System\Store</frontend_model>
+					<backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

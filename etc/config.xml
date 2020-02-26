@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+	<default>
+		<orderhistory>
+			<mapping>
+				<status>{"_1582670422690_690":{"status_id":"processing","status_id_mapping":"Processing"},"_1582670433921_921":{"status_id":"pending_payment","status_id_mapping":"Pending Payment"},"_1582670448488_488":{"status_id":"payment_review","status_id_mapping":"Payment Review"},"_1582670458851_851":{"status_id":"fraud","status_id_mapping":"Suspected Fraud"},"_1582670475757_757":{"status_id":"pending","status_id_mapping":"Pending"},"_1582670489195_195":{"status_id":"holded","status_id_mapping":"On Hold"},"_1582670506436_436":{"status_id":"complete","status_id_mapping":"Complete"},"_1582670516210_210":{"status_id":"closed","status_id_mapping":"closed"},"_1582670523874_874":{"status_id":"canceled","status_id_mapping":"Canceled"},"_1582670539380_380":{"status_id":"pending_paypal","status_id_mapping":"Pending Paypal"}}</status>
+                <store>{"_1582670363255_255":{"store_id":"1","store_id_mapping":"1"}}</store>
+			</mapping>
+		</orderhistory>
+	</default>
+</config>
