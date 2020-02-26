@@ -1,11 +1,10 @@
 <?php
-
-use \Magento\Framework\Data\Helper\PostHelper;
-use \Xigen\OrderHistory\Helper\Reorder;
-
-// phpcs:disable Magento2.Templates.ThisInTemplate
-
+/**
+ * @author Dominic <dominic@xigen.co.uk>
+ */
 /** @var \Xigen\OrderHistory\Block\Sales\History $block */
+
+$viewModel = $block->getViewModel();
 ?>
 <?php $_orders = $block->getOrders(); ?>
 <?= $block->getChildHtml('info') ?>
@@ -43,9 +42,9 @@ use \Xigen\OrderHistory\Helper\Reorder;
                             <a href="<?= $block->escapeUrl($block->getViewUrl($_order)) ?>" class="action view">
                                 <span><?= $block->escapeHtml(__('View Order')) ?></span>
                             </a>
-                            <?php if ($this->helper(Reorder::class)->canReorder($_order->getEntityId())): ?>
+                            <?php if ($viewModel->canReorder($_order->getEntityId())): ?>
                                 <a href="#" 
-                                   data-post='<?= $block->escapeHtmlAttr($this->helper(PostHelper::class)->getPostData($block->getReorderUrl($_order))) // phpcs:ignore ?>' 
+                                   data-post='<?= $block->escapeHtmlAttr($viewModel->getPostData($block->getReorderUrl($_order))) // phpcs:ignore ?>' 
                                    class="action order btn btn-primary">
                                     <span><?= $block->escapeHtml(__('Reorder')) ?></span>
                                 </a>

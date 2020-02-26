@@ -183,13 +183,13 @@ class View extends \Magento\Framework\View\Element\Template
     public function getCurrencySymbol()
     {
         $order = $this->getOrder();
-        if (!$order || ! $order->getId()) {
+        if (!$order || !$order->getId()) {
             return null;
         }
 
         $currency = $this->currencyFactory
             ->create()
-            ->load($order->getOrderCurrency());
+            ->load($order->getOrderCurrencyCode());
 
         if (!$currency) {
             return null;

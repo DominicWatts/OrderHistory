@@ -1,7 +1,8 @@
 <?php
 /**
- *
+ * @author Dominic <dominic@xigen.co.uk>
  */
+/** @var \Xigen\OrderHistory\Block\Sales\View $block */
 ?>
 <ul class="items order-links">
     <li class="nav item current">
@@ -40,10 +41,6 @@
                 endif;
                 ?>
                 <tbody>
-                    
-
-                    <?php
-                    ?>
                     <tr id="order-item-row-<?= (int) $_item->getId() ?>">
                         <td class="col name" data-th="<?= $block->escapeHtml(__('Product Name')) ?>">
                             <strong class="product name product-item-name">
@@ -56,8 +53,7 @@
                         </td>
                         <td class="col price" data-th="<?= $block->escapeHtml(__('Price')) ?>">
                             <?= /* @noEscape */ $block->formatPrice(
-                                $_item->getPrice(),
-                                $_order->getOrderCurrencyCode()
+                                $_item->getPrice()
                             ) ?>
                         </td>
                         <td class="col qty" data-th="<?= $block->escapeHtml(__('Qty')) ?>">
@@ -90,14 +86,10 @@
                         </td>
                         <td class="col subtotal" data-th="<?= $block->escapeHtml(__('Subtotal')) ?>">
                         <?= /* @noEscape */ $block->formatPrice(
-                            $_item->getRowTotal(),
-                            $_order->getOrderCurrencyCode()
+                            $_item->getRowTotal()
                         ) ?>
                         </td>
                     </tr>
-
-
-
                 </tbody>
             <?php endforeach; ?>
             <tfoot>
@@ -117,7 +109,7 @@
                     <td class="amount" data-th="<?= $block->escapeHtml(__('Subtotal')) ?>">
                         <span class="price"><?= /* @noEscape */ $block->formatPrice(
                             $_order->getSubtotal()
-                        ); ?></span>
+                        ) ?></span>
                     </td>
                 </tr>
                 <tr class="shipping">
@@ -127,7 +119,7 @@
                     <td class="amount" data-th="<?= $block->escapeHtml(__('Shipping &amp; Handling')) ?>">
                         <span class="price"><?= /* @noEscape */ $block->formatPrice(
                             $_order->getShippingAmount()
-                        ); ?></span>
+                        ) ?></span>
                     </td>
                 </tr>
                 <tr class="grand_total">
@@ -137,7 +129,7 @@
                     <td class="amount" data-th="<?= $block->escapeHtml(__('Grand Total')) ?>">
                         <strong><span class="price"><?= /* @noEscape */ $block->formatPrice(
                             $_order->getGrandTotal()
-                        ); ?></span></strong>
+                        ) ?></span></strong>
                     </td>
                 </tr>
             </tfoot>
