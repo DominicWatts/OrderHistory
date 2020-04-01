@@ -1,0 +1,17 @@
+parameters:
+    level: 7
+    fileExtensions:
+        - php
+        - phtml
+    paths:
+        - Api
+        - Block
+        - Controller
+        - Helper
+        - Model
+        - Plugin
+        - Repository
+        - Setup
+        - Ui
+        - Validator
+        - view
