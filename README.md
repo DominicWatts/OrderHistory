@@ -1,5 +1,9 @@
 # Magento 1 Order History Migration to Magento 2
 
+![phpcs](https://github.com/DominicWatts/OrderHistory/workflows/phpcs/badge.svg)
+
+![PHPCompatibility](https://github.com/DominicWatts/OrderHistory/workflows/PHPCompatibility/badge.svg)
+
 Easily migrate magento 1 orders to magento 2 and show orders in self contained area in customer account. Offer reorder functionality where possible.
 
 ## Install
