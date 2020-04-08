@@ -3,7 +3,7 @@
     "description": "Easily migrate magento 1 orders to magento 2 and show orders in self contained area in customer account. Offer reorder functionality where possible.",
     "type": "magento2-module",
     "license": "proprietary",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "authors": [
         {
             "name": "Dominic Xigen",
