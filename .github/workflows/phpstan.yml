@@ -6,7 +6,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - uses: MilesChou/composer-action@master
+      env:
+        COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
       with:
-        args: install
+        args: install --prefer-dist --no-dev --ignore-platform-reqs
     - name: PHPStan
-      run: docker run --rm -v $PWD:/code domw/phpstan analyze ./src
+      run: docker run --rm -v $PWD:/code domw/phpstan analyze ./
