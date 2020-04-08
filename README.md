@@ -4,6 +4,8 @@
 
 ![PHPCompatibility](https://github.com/DominicWatts/OrderHistory/workflows/PHPCompatibility/badge.svg)
 
+![PHPStan](https://github.com/DominicWatts/OrderHistory/workflows/PHPStan/badge.svg)
+
 Easily migrate magento 1 orders to magento 2 and show orders in self contained area in customer account. Offer reorder functionality where possible.
 
 ## Install
