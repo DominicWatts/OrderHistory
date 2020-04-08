@@ -13,4 +13,5 @@ parameters:
     ignoreErrors:
         - '#invalid typehint#'
         - '#unknown class#'
+        - '#Pager#'
     reportUnmatchedIgnoredErrors: false

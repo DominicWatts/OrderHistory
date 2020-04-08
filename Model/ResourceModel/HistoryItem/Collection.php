@@ -7,6 +7,10 @@ namespace Xigen\OrderHistory\Model\ResourceModel\HistoryItem;
  */
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
+    /**
+     * @var \Xigen\OrderHistory\Model\History
+     */
+    public $_salesOrder;
 
     /**
      * @var string
@@ -36,7 +40,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     /**
      * Set sales order model as parent collection object
      *
-     * @param \Magento\Sales\Model\Order $order
+     * @param \Xigen\OrderHistory\Model\History $order
      * @return $this
      */
     public function setSalesOrder($order)
@@ -48,7 +52,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     /**
      * Retrieve sales order as parent collection object
      *
-     * @return \Magento\Sales\Model\Order|null
+     * @return \Xigen\OrderHistory\Model\History|null
      */
     public function getSalesOrder()
     {

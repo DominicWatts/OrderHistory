@@ -10,14 +10,34 @@ use Magento\Framework\Controller\ResultFactory;
 class Reorder extends \Magento\Framework\App\Action\Action
 {
     /**
+     * @var \Xigen\OrderHistory\Api\HistoryRepositoryInterface
+     */
+    protected $orderRepository;
+
+    /**
      * @var \Magento\Framework\View\Result\PageFactory
      */
     protected $resultPageFactory;
 
     /**
+     * @var \Xigen\OrderHistory\Model\HistoryFactory
+     */
+    protected $order;
+
+    /**
      * @var \Xigen\OrderHistory\Helper\Reorder
      */
     protected $reorder;
+
+    /**
+     * @var \Magento\Checkout\Model\Cart
+     */
+    protected $cart;
+
+    /**
+     * @var \Magento\Catalog\Model\ProductFactory
+     */
+    protected $productFactory;
 
     /**
      * Undocumented function
@@ -86,7 +106,7 @@ class Reorder extends \Magento\Framework\App\Action\Action
             $qty = (int) $history->getQtyOrdered();
             if ($qty === 0) {
                 $this->messageManager->addWarning(
-                    __('Cannot add %1 at this time', $add->getName())
+                    __('Cannot add %1 at this time', $product->getName())
                 );
                 continue;
             }
