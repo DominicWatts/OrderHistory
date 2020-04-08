@@ -33,6 +33,9 @@ class History extends \Magento\Framework\Model\AbstractModel
     const STATE_PAYMENT_REVIEW = 'payment_review';
     const STATE_HOLDED = 'holded';
 
+    const STATUS = 'status';
+    const STATE = 'state';
+
     /**
      * @var HistoryInterfaceFactory
      */
@@ -326,5 +329,23 @@ class History extends \Magento\Framework\Model\AbstractModel
     public function canUnhold()
     {
         return $this->getState() === self::STATE_HOLDED;
+    }
+
+    /**
+     * Returns status
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->getData(self::STATUS);
+    }
+
+    /**
+     * Returns state
+     * @return int|null
+     */
+    public function getState()
+    {
+        return $this->getData(self::STATE);
     }
 }

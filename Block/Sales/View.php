@@ -32,6 +32,16 @@ class View extends \Magento\Framework\View\Element\Template
     protected $_orderConfig;
 
     /**
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface
+     */
+    protected $customerRepositoryInterface;
+
+    /**
+     * @var \Xigen\OrderHistory\Model\HistoryFactory
+     */
+    protected $history;
+
+    /**
      * @var \Xigen\OrderHistory\Model\ResourceModel\History\Collection
      */
     protected $orders;

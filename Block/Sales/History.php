@@ -28,6 +28,16 @@ class History extends \Magento\Framework\View\Element\Template
     protected $_orderConfig;
 
     /**
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface
+     */
+    protected $customerRepositoryInterface;
+
+    /**
+     * @var \Xigen\OrderHistory\Model\HistoryFactory
+     */
+    protected $history;
+
+    /**
      * @var \Xigen\OrderHistory\Model\ResourceModel\History\Collection
      */
     protected $orders;
@@ -48,7 +58,12 @@ class History extends \Magento\Framework\View\Element\Template
     protected $configHelper;
 
     /**
-     * Undocumented function
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * History constructor.
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \Xigen\OrderHistory\Model\ResourceModel\History\CollectionFactory $orderCollectionFactory
      * @param \Magento\Customer\Model\Session $customerSession
@@ -58,6 +73,7 @@ class History extends \Magento\Framework\View\Element\Template
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Directory\Model\CurrencyFactory $currencyFactory
      * @param \Xigen\OrderHistory\Helper\Config $configHelper
+     * @param \Psr\Log\LoggerInterface $logger
      * @param array $data
      */
     public function __construct(
@@ -70,6 +86,7 @@ class History extends \Magento\Framework\View\Element\Template
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Directory\Model\CurrencyFactory $currencyFactory,
         \Xigen\OrderHistory\Helper\Config $configHelper,
+        \Psr\Log\LoggerInterface $logger,
         array $data = []
     ) {
         $this->_orderCollectionFactory = $orderCollectionFactory;
@@ -80,6 +97,7 @@ class History extends \Magento\Framework\View\Element\Template
         $this->_storeManager = $storeManager;
         $this->currencyFactory = $currencyFactory;
         $this->configHelper = $configHelper;
+        $this->logger = $logger;
         parent::__construct($context, $data);
     }
 
@@ -229,13 +247,11 @@ class History extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Get currency from loaded order
+     * Get currency symbol from currency code
      * @return void|string
      */
     public function getCurrencySymbol($currencyCode)
     {
-        $order = $this->getOrder();
-
         $currency = $this->currencyFactory
             ->create()
             ->load($currencyCode);

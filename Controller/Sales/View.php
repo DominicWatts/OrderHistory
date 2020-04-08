@@ -16,6 +16,11 @@ use Magento\Framework\View\Result\PageFactory;
 class View extends \Magento\Framework\App\Action\Action
 {
     /**
+     * @var PageFactory
+     */
+    protected $resultPageFactory;
+
+    /**
      * @var \Xigen\OrderHistory\Model\OrderFactory
      */
     protected $orderFactory;
@@ -44,6 +49,11 @@ class View extends \Magento\Framework\App\Action\Action
      * @var Http
      */
     private $request;
+
+    /**
+     * @var CustomerSession
+     */
+    protected $customerSession;
 
     /**
      * Undocumented function
