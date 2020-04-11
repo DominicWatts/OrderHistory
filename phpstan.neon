@@ -9,7 +9,6 @@ parameters:
         - ViewModel
     excludes_analyse:
         - 'vendor'
-        - 'Block\Adminhtml\System'
     ignoreErrors:
         - '#invalid typehint#'
         - '#unknown class#'
