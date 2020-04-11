@@ -19,7 +19,8 @@
     ],
     "require": {
         "magento/framework": "*",
-        "php": ">=5.6.0"
+        "php": ">=5.6.0",
+        "magento/module-config": "*"
     },
     "autoload": {
         "psr-4": {
