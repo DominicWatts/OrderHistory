@@ -25,6 +25,15 @@ Included sample sql data in repo (`./supplied/magento.sql`) based on magento 1 s
 
 ![Screenshot](https://i.snipboard.io/ybitXp.jpg)
 
+### Step 1.1 Find invalid column types
+
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE DATA_TYPE ='enum';
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE DATA_TYPE ='char';
+
+### Step 1.2 Convert invalid column types
+
+ALTER TABLE `m1_sales_flat_order` CHANGE `column_name` `column_name` VARCHAR(255) NULL DEFAULT NULL;
+
 ### Step 2 - Dump from Magento 1 and import the following tables into your Magento 2 database
 
     m1_sales_flat_order
