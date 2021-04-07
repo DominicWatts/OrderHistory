@@ -42,6 +42,20 @@ Included sample sql data in repo (`./supplied/magento.sql`) based on magento 1 s
 
 Use `mysqldump` or similar
 
+### Step 2.1 - Magento setup:upgrade error
+
+    undefined index : <index>
+    
+Check foreign keys on newly imported table. May need to delete.
+
+    SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME = <index>;
+    
+For example
+    
+    SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME = 'core_store';
+    
+    ALTER TABLE `m1_sales_flat_order` DROP FOREIGN KEY <fk_name>;
+
 ### Step 3 - Install extension
 
 `composer require dominicwatts/orderhistory`
